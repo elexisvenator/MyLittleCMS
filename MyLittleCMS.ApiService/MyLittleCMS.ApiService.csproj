@@ -1,0 +1,27 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\MyLittleCMS.ServiceDefaults\MyLittleCMS.ServiceDefaults.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+	<PackageReference Include="Aspire.Npgsql" Version="9.1.0" />
+	<PackageReference Include="Marten" Version="7.37.3" />
+	<PackageReference Include="Marten.CommandLine" Version="7.37.3" />
+	<PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.2" />
+	<PackageReference Include="Scalar.AspNetCore" Version="2.0.18" />
+	<PackageReference Include="Vogen" Version="7.0.1" />
+	<PackageReference Include="WolverineFx" Version="3.9.1" />
+	<PackageReference Include="WolverineFx.Http" Version="3.9.1" />
+	<PackageReference Include="WolverineFx.Http.FluentValidation" Version="3.9.1" />
+	<PackageReference Include="WolverineFx.Http.Marten" Version="3.9.1" />
+	<PackageReference Include="WolverineFx.Marten" Version="3.9.1" />
+  </ItemGroup>
+
+</Project>
