@@ -4,6 +4,18 @@
 
 My Little CMS is vaguely a website api and vaguely a CMS. It was not built with any production use case in mind.  Instead the purpose is to imagine what a clean, production ready application might look like if it went all-in with [Critterstack](https://jasperfx.net/).  Additionally, this app is used to identify potential questions, feature gaps and bugs in critterstack usage so that they can be fed back (or contributed back) to the critterstack team.
 
+## Get started
+
+### Prerequisites
+
+- Docker
+- Dotnet 9
+
+### How to try it out
+
+- Open in visual studio
+- Run the application by running the MyLittleCMS.AppHost project.
+
 ## Application requirements
 
 (these requirements are nonsensical, and intended to test a bunch of different features)
@@ -86,8 +98,8 @@ Testing!!!
 
 - `CombGuidUiGeneration` - there are two of these, can the one in Marten be removed?
 - Support using [Collation](https://www.postgresql.org/docs/current/collation.html) for string comparisons + indexing, as these are much more powerful for case and accent insensitive comparisons
-- `session.Events.FetchLatest<T>()` has a return signature of `T`, but should be `T?`
-- `IEventStream<T>.Aggregate` is of type `T` but should be `T?` 
+- ~~`session.Events.FetchLatest<T>()` has a return signature of `T`, but should be `T?`~~
+- ~~`IEventStream<T>.Aggregate` is of type `T` but should be `T?`~~
 
 - TODO: (marten) create an example of `fetchLatest` that works on a predicate instead of a stream key. (for natural key support)
   - BONUS: instead of a predicate on the same projection, do a predicate on a different projection (reasoning here is to have a dedicated inline projection for mapping natural ids)
