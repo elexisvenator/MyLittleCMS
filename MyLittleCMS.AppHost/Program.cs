@@ -3,7 +3,7 @@ var builder = DistributedApplication.CreateBuilder(args);
 var postgres = builder.AddPostgres("postgres")
     .WithDataVolume()
     .WithArgs("postgres", "-c", "log_statement=all")
-    .WithEnvironment("POSTGRES_DB", "mylittlecms")
+    .WithEnvironment("POSTGRES_DB", "my_little_cms")
     .WithPgAdmin(pgAdmin =>
     {
         pgAdmin.WithImage("dpage/pgadmin4", "latest");
