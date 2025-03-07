@@ -7,6 +7,7 @@ using MyLittleCMS.ApiService.Models;
 using Wolverine.Http;
 using Wolverine.Http.Marten;
 using Wolverine.Marten;
+using Wolverine.Persistence;
 
 namespace MyLittleCMS.ApiService.Endpoints.Page;
 
@@ -16,7 +17,8 @@ public static class CreatePageEndpoint
     [WolverinePost("{tenantId:int}/pages/{parentPageId:guid}/new", OperationId = "Create Page")]
     public static (PageCreatedResponse, IMartenOp, IMartenOp) CreatePage(
         CreatePageRequest request, 
-        [Document("parentPageId", MaybeSoftDeleted = false, Required = true)]DataModels.Page parentPage)
+        [Document("parentPageId", MaybeSoftDeleted = false, Required = true)]DataModels.Page parentPage,
+        TenantId tenantId)
     {
         var pageId = PageId.New();
         const int pageVersion = 1;
@@ -41,7 +43,7 @@ public static class CreatePageEndpoint
                 request.AuthorUserId!.Value));
 
         return (
-            new PageCreatedResponse(pageId.Value),
+            new PageCreatedResponse(tenantId.Value, pageId.Value),
             MartenOps.Insert(page),
             newStream
         );
@@ -69,6 +71,8 @@ public record CreatePageRequest
 }
 
 public sealed record PageCreatedResponse(
+    [property: Description("The tenant id")]
+    string TenantId,
     [property: Description("The page id")]
     Guid PageId
-) : CreationResponse($"/pages/{PageId:N}");
+) : CreationResponse($"/{TenantId}/pages/{PageId:N}");

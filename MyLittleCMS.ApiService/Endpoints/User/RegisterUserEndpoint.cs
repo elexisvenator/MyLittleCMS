@@ -4,6 +4,7 @@ using JasperFx.Core;
 using Marten;
 using Wolverine.Http;
 using Wolverine.Marten;
+using Wolverine.Persistence;
 
 namespace MyLittleCMS.ApiService.Endpoints.User;
 
@@ -11,11 +12,11 @@ namespace MyLittleCMS.ApiService.Endpoints.User;
 public static class RegisterUserEndpoint
 {
     [WolverinePost("{tenantId:int}/users/register", OperationId = "Register User")]
-    public static (UserRegisteredResponse, IMartenOp) RegisterUser(RegisterUserRequest request)
+    public static (UserRegisteredResponse, IMartenOp) RegisterUser(RegisterUserRequest request, TenantId tenantId)
     {
         var userId = CombGuidIdGeneration.NewGuid();
         return (
-            new UserRegisteredResponse(userId),
+            new UserRegisteredResponse(tenantId.Value, userId),
             MartenOps.Insert(new DataModels.User
             {
                 UserId = userId,
@@ -52,6 +53,8 @@ public record RegisterUserRequest
 }
 
 public sealed record UserRegisteredResponse(
+    [property: Description("The tenant id")]
+    string TenantId,
     [property: Description("The user id")]
     Guid UserId
-) : CreationResponse($"/users/{UserId}");
+) : CreationResponse($"/{TenantId}/users/{UserId}");

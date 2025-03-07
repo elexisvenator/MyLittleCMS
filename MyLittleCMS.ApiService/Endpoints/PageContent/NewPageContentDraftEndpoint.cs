@@ -1,4 +1,5 @@
-﻿using FluentValidation;
+﻿using System.ComponentModel;
+using FluentValidation;
 using Marten;
 using Marten.Events;
 using Marten.Services.BatchQuerying;
@@ -9,6 +10,7 @@ using MyLittleCMS.ApiService.Models;
 using Wolverine.Http;
 using Wolverine.Http.Marten;
 using Wolverine.Marten;
+using Wolverine.Persistence;
 
 namespace MyLittleCMS.ApiService.Endpoints.PageContent;
 
@@ -81,10 +83,11 @@ public static class NewPageContentDraftEndpoint
     }
 
     [WolverinePost("{tenantId:int}/pages/{pageId:guid}/content/new", OperationId = "Create New Page Content Draft")]
-    public static IMartenOp[] CreateNewPageContentDraft(
+    public static (PageContentCreatedResponse, IMartenOp[]) CreateNewPageContentDraft(
         NewPageContentDraftRequest request,
         [Document(Required = true, MaybeSoftDeleted = false)] DataModels.Page page,
-        ExistingContentVersions existing)
+        ExistingContentVersions existing,
+        TenantId tenantId)
     {
         var newVersionNumber = existing.CurrentMaxPageContentVersionNumber + 1;
         var newStreamKey = PageContentId.From(PageId.From(page.PageId), newVersionNumber);
@@ -109,7 +112,10 @@ public static class NewPageContentDraftEndpoint
                 DraftContentVersionNumber = newVersionNumber
             });
 
-        return [newStream, updatePage];
+        return (
+            new PageContentCreatedResponse(tenantId.Value, page.PageId, newStreamKey.Value),
+            [newStream, updatePage]
+        );
     }
 
     public record ExistingContentVersions(
@@ -140,3 +146,12 @@ public record NewPageContentDraftRequest
         }
     }
 }
+
+public sealed record PageContentCreatedResponse(
+    [property: Description("The tenant id")]
+    string TenantId,
+    [property: Description("The page id")]
+    Guid PageId,
+    [property: Description("The page content id")]
+    string PageContentId
+) : CreationResponse($"/{TenantId}/pages/{PageId:N}/content/{PageContentId}");

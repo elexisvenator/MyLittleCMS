@@ -6,6 +6,7 @@ using MyLittleCMS.ApiService.DataModels.Events;
 using MyLittleCMS.ApiService.Models;
 using Wolverine.Http;
 using Wolverine.Marten;
+using Wolverine.Persistence;
 
 namespace MyLittleCMS.ApiService.Endpoints.Page;
 
@@ -28,7 +29,7 @@ public static class CreateRootPageEndpoint
     }
 
     [WolverinePost("{tenantId:int}/pages/new", OperationId = "Create Root Page")]
-    public static (PageCreatedResponse, IMartenOp, IMartenOp) CreatePage(CreateRootPageRequest request)
+    public static (PageCreatedResponse, IMartenOp, IMartenOp) CreatePage(CreateRootPageRequest request, TenantId tenantId)
     {
         var pageId = PageId.New();
         const int pageVersion = 1;
@@ -53,7 +54,7 @@ public static class CreateRootPageEndpoint
                 request.AuthorUserId!.Value));
 
         return (
-            new PageCreatedResponse(pageId.Value),
+            new PageCreatedResponse(tenantId.Value, pageId.Value),
             MartenOps.Insert(page),
             newStream
         );
