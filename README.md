@@ -79,19 +79,21 @@ Testing!!!
 
 ### Bugs
 
-- Setting the npgsql type to array + text (aka `text[]`) doesn't work, codegen creates invalid code
+- Setting the npgsql type to array + text (aka `text[]`) doesn't work, codegen creates invalid code - fixed by JasperFx/marten#3702
 - adding a strong typed string (vogen) as a non-id property threw exception on startup (could not find npgsql type)
 - `opts.Policies.AllDocumentsSoftDeleted()` does not work if you also have aggregate projections
 
 ### Feature gaps
 
-- Query strings and get endpoints have limited support compared to request bodies. It would be great if we can specify a model that would bind to querystring values, possibly with the attribute `[FromQuery]` 
-  - ideally should work with fluentvalidation when that is turned on
-  - For swagger/openapi, the querystring values metadata should be derived from this model's property metadata
+- ✅ ~~Query strings and get endpoints have limited support compared to request bodies. It would be great if we can specify a model that would bind to querystring values, possibly with the attribute `[FromQuery]`~~
+  - ✅ ~~ideally should work with fluentvalidation when that is turned on~~
+  - ✅ ~~For swagger/openapi, the querystring values metadata should be derived from this model's property metadata~~
+  - **Implemented in Wolverine 3.12**
 - Support strongly typed ids when using `[Document]` and `[Aggregate]` - marten works (i think) but wolverine's attributes do not.
 - FluentValidation - this is injected before any `[Document]` or `[Aggregate]` is loaded, meaning that you cannot inject these objects into validation.
   - alternative, should I be calling LoadAsync and rely on identity map to not make multiple db calls?
 - Need a `MartenOps.AppendEvents()` for when you need to append to a stream you don't have an `[Aggregate]` for.
+  - Alternatively - get the stream yourself and call `IEventStream<T>.AddOne()`
 
 
 ### Misc/nice to haves
